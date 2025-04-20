@@ -1,9 +1,27 @@
- const askButton = document.getElementById('ask-btn');
+        const askButton = document.getElementById('ask-btn');
         const questionInput = document.getElementById('question');
         const chatHistory = document.getElementById('chat-history');
+        const saveButton = document.getElementById('save-btn');
+        const loadButton = document.getElementById('load-btn');
+        const voiceButton = document.getElementById('voice-btn');
 
-        const API_KEY = 'YOUR_API_KEY';
-        const MODEL = 'openrouter/electronics';
+        const API_KEY = 'API KEY';
+        const MODEL = 'anthropic/claude-3-sonnet';
+
+        // Initialize speech recognition
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            questionInput.value = transcript;
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+        };
 
         function appendMessage(content, sender = 'bot') {
             const messageDiv = document.createElement('div');
@@ -14,6 +32,14 @@
                 messageDiv.innerHTML = `<div class="markdown-content">${markdownContent}</div>`;
             } else {
                 messageDiv.textContent = content;
+            }
+
+            if (sender === 'user') {
+                messageDiv.style.textAlign = 'right';
+                messageDiv.style.marginLeft = 'auto';
+            } else {
+                messageDiv.style.textAlign = 'left';
+                messageDiv.style.marginRight = 'auto';
             }
 
             chatHistory.appendChild(messageDiv);
@@ -37,7 +63,7 @@
                     body: JSON.stringify({
                         model: MODEL,
                         prompt: question,
-                        max_tokens: 200,
+                        max_tokens: 500,
                     }),
                 });
 
@@ -53,23 +79,31 @@
             }
         }
 
+        function saveChat() {
+            // Logic to save chat
+        }
+
+        function loadChat() {
+            // Logic to load chat
+        }
+
+        voiceButton.addEventListener('click', function() {
+            recognition.start();
+        });
+
         askButton.addEventListener('click', handleAsk);
-
-        questionInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                handleAsk();
-            }
-        });
-        // Disable right-click
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
+        saveButton.addEventListener('click', saveChat);
+        loadButton.addEventListener('click', loadChat);
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
         });
 
-        // Disable certain key combinations (e.g., F12, Ctrl+Shift+I, Ctrl+U)
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || 
-                (e.ctrlKey && e.key === 'U')) {
-                e.preventDefault();
+        // Disable F12, Ctrl+Shift+I, and Ctrl+U
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'F12' || 
+                (event.ctrlKey && event.shiftKey && event.key === 'I') || 
+                (event.ctrlKey && event.key === 'u')) {
+                event.preventDefault();
             }
         });
