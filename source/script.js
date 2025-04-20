@@ -6,7 +6,7 @@
         const voiceButton = document.getElementById('voice-btn');
 
         const API_KEY = 'API KEY';
-        const MODEL = 'anthropic/claude-3-sonnet';
+        const MODEL = 'model/electronics';
 
         // Initialize speech recognition
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
