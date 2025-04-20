@@ -5,7 +5,7 @@ const saveButton = document.getElementById('save-btn');
 const loadButton = document.getElementById('load-btn');
 const voiceButton = document.getElementById('voice-btn');
 
-const API_KEY = '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';
+const API_KEY = 'API';
 const MODEL = 'anthropic/claude-3-sonnet';
 
 // Initialize speech recognition
